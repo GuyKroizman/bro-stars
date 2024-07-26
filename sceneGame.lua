@@ -1,3 +1,4 @@
+Score = 0
 bullets = {}
 
 frameCounter = 0
@@ -196,6 +197,7 @@ sceneGame = {
 			if collisionBulletEnemy(bullet, enemies) then
 				sfx(1)
 				del(bullets, bullet)
+				Score += 1
 			end
 		end
 
@@ -224,5 +226,6 @@ sceneGame = {
 		for enemy in all(enemies) do
 			enemy:draw()
 		end
+		print("score: " .. Score, 5, 5, 7)
 	end,
 }
