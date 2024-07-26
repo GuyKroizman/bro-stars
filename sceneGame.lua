@@ -43,7 +43,7 @@ function GetDy(speed)
 		return -sqrt(speed)
 	end
 end
-function shoot()
+function Shoot()
 	sfx(2)
 	local bullet = {
 		-- alive=false,
@@ -134,7 +134,7 @@ bro = {
 				return
 			end
 			lastShootFrame = frameCounter
-			shoot()
+			Shoot()
 		end
 	end,
 	draw = function(self)
@@ -215,7 +215,7 @@ sceneGame = {
 		end
 	end,
 	draw = function()
-		cls()
+		cls(1)
 
 		bro:draw()
 		for bullet in all(bullets) do
@@ -226,4 +226,3 @@ sceneGame = {
 		end
 	end,
 }
-

@@ -9,7 +9,6 @@ sceneGameOver = {
 	end,
 	draw = function()
 		cls()
-		print("GAME OVER BRO", 20, 64)
+		print("so dead bro", 20, 64)
 	end,
 }
-
