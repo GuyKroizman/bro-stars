@@ -8,6 +8,8 @@ sceneGameOver = {
 			TimeUntilNextEnemySpwan = 80
 			EnemySpawnSpeed = 30
 			FrameCounter = 0
+			LastShootFrame = 0
+			Score = 0
 		end
 	end,
 	draw = function()

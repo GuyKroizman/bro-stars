@@ -2,10 +2,43 @@ Score = 0
 bullets = {}
 
 FrameCounter = 0
-lastShootFrame = 0
+LastShootFrame = 0
 
 TimeUntilNextEnemySpwan = 80
 EnemySpawnSpeed = 30
+
+function CreateStars()
+	local stars = {}
+	for i = 0, 20 do
+		add(stars, { x = rnd(128), y = rnd(128) })
+	end
+	return {
+		draw = function()
+			for star in all(stars) do
+				pset(star.x, star.y, 7)
+			end
+		end,
+	}
+end
+
+Stars = CreateStars()
+
+function CreateSuns()
+	local suns = {}
+	for i = 0, 3 do
+		add(suns, { x = rnd(128), y = rnd(128) })
+	end
+	return {
+		draw = function()
+			for sun in all(suns) do
+				circfill(sun.x, sun.y, 2, 10)
+				circfill(sun.x, sun.y, 1, 9)
+			end
+		end,
+	}
+end
+
+Suns = CreateSuns()
 
 function GetDx(speed)
 	if bro.direction == 1 then
@@ -68,17 +101,17 @@ function Shoot()
 	add(bullets, bullet)
 end
 
-function createBroDeathAnimation(animation)
+function CreateBroDeathAnimation(params)
 	local frameCounter = 0
 	local currentFrame = 1
 	local isFinished = false
 	return {
 		nextFrame = function()
 			frameCounter = frameCounter + 1
-			if frameCounter % animation.frameRate == 0 then
+			if frameCounter % params.frameRate == 0 then
 				currentFrame = currentFrame + 1
 			end
-			if currentFrame > #animation.frames then
+			if currentFrame > #params.frames then
 				isFinished = true
 			end
 		end,
@@ -86,7 +119,7 @@ function createBroDeathAnimation(animation)
 			return isFinished
 		end,
 		draw = function()
-			spr(animation.frames[currentFrame], bro.x, bro.y)
+			spr(params.frames[currentFrame], bro.x, bro.y)
 		end,
 		reset = function()
 			currentFrame = 1
@@ -96,7 +129,7 @@ function createBroDeathAnimation(animation)
 	}
 end
 
-animation = createBroDeathAnimation({ frameRate = 4, frames = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } })
+deathAnimation = CreateBroDeathAnimation({ frameRate = 4, frames = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } })
 
 bro = {
 	x = 64,
@@ -106,9 +139,9 @@ bro = {
 	direction = 1,
 	update = function(self)
 		if not self.alive then
-			animation:nextFrame()
-			if animation.isFinished() then
-				animation:reset()
+			deathAnimation:nextFrame()
+			if deathAnimation.isFinished() then
+				deathAnimation:reset()
 				_update = sceneGameOver.update
 				_draw = sceneGameOver.draw
 			end
@@ -126,21 +159,33 @@ bro = {
 		if self.direction < 1 then
 			self.direction = 8
 		end
-		if btn(2) then
+		if btn(2) or btn(3) then
+			if (self.direction == 8 or self.direction == 1 or self.direction == 2) and self.y < 0 then
+				return
+			end
+			if (self.direction == 2 or self.direction == 3 or self.direction == 4) and self.x > 120 then
+				return
+			end
+			if (self.direction == 4 or self.direction == 5 or self.direction == 6) and self.y > 120 then
+				return
+			end
+			if (self.direction == 6 or self.direction == 7 or self.direction == 8) and self.x < 0 then
+				return
+			end
 			self.x = self.x + GetDx(self.speed)
 			self.y = self.y + GetDy(self.speed)
 		end
 		if btn(4) then
-			if FrameCounter - lastShootFrame < 10 then
+			if FrameCounter - LastShootFrame < 10 then
 				return
 			end
-			lastShootFrame = FrameCounter
+			LastShootFrame = FrameCounter
 			Shoot()
 		end
 	end,
 	draw = function(self)
 		if not self.alive then
-			animation.draw()
+			deathAnimation.draw()
 			return
 		end
 		if self.direction == 1 then
@@ -163,7 +208,7 @@ bro = {
 	end,
 }
 
-function collisionBulletEnemy()
+function CollisionBulletEnemy()
 	for enemy in all(enemies) do
 		for bullet in all(bullets) do
 			if bullet.x > enemy.x and bullet.x < enemy.x + 8 and bullet.y > enemy.y and bullet.y < enemy.y + 8 then
@@ -175,7 +220,7 @@ function collisionBulletEnemy()
 	return false
 end
 
-function collisionBroEnemy(bro, enemy)
+function CollisionBroEnemy(bro, enemy)
 	if not bro.alive then
 		return false
 	end
@@ -194,7 +239,7 @@ sceneGame = {
 
 		for bullet in all(bullets) do
 			bullet:update()
-			if collisionBulletEnemy(bullet, enemies) then
+			if CollisionBulletEnemy(bullet, enemies) then
 				sfx(1)
 				del(bullets, bullet)
 				Score += 1
@@ -204,9 +249,8 @@ sceneGame = {
 		for enemy in all(enemies) do
 			enemy:update()
 
-			if collisionBroEnemy(bro, enemy) then
+			if CollisionBroEnemy(bro, enemy) then
 				bro.alive = false
-				Score = 0
 				sfx(4)
 				sfx(3)
 			end
@@ -226,6 +270,9 @@ sceneGame = {
 	end,
 	draw = function()
 		cls(1)
+
+		Stars:draw()
+		Suns:draw()
 
 		bro:draw()
 		for bullet in all(bullets) do
