@@ -5,6 +5,9 @@ sceneGameOver = {
 			_draw = sceneGame.draw
 			bro.alive = true
 			enemies = {}
+			TimeUntilNextEnemySpwan = 80
+			EnemySpawnSpeed = 30
+			FrameCounter = 0
 		end
 	end,
 	draw = function()

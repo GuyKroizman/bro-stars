@@ -4,7 +4,7 @@ bullets = {}
 FrameCounter = 0
 lastShootFrame = 0
 
-timeUntilNextEnemySpwan = 80
+TimeUntilNextEnemySpwan = 80
 EnemySpawnSpeed = 30
 
 function GetDx(speed)
@@ -188,7 +188,7 @@ end
 
 sceneGame = {
 	update = function()
-		timeUntilNextEnemySpwan -= 1
+		TimeUntilNextEnemySpwan -= 1
 		FrameCounter += 1
 		bro:update()
 
@@ -206,13 +206,14 @@ sceneGame = {
 
 			if collisionBroEnemy(bro, enemy) then
 				bro.alive = false
+				Score = 0
 				sfx(4)
 				sfx(3)
 			end
 		end
 
-		if timeUntilNextEnemySpwan <= 0 then
-			timeUntilNextEnemySpwan = rnd(EnemySpawnSpeed)
+		if TimeUntilNextEnemySpwan <= 0 then
+			TimeUntilNextEnemySpwan = rnd(EnemySpawnSpeed)
 			if FrameCounter > 999 then
 				EnemySpawnSpeed = 0
 			elseif FrameCounter > 666 then
