@@ -55,8 +55,7 @@ function Shoot()
 		dx = GetDx(2),
 		dy = GetDy(2),
 		update = function(self)
-			if self.x > 128 then
-				-- self.alive = false
+			if self.x > 128 or self.x < 0 or self.y < 0 or self.y > 128 then
 				del(bullets, self)
 			end
 			self.x = self.x + self.dx
@@ -74,9 +73,9 @@ function createBroDeathAnimation(animation)
 	local currentFrame = 1
 	local isFinished = false
 	return {
-		nextFrame = function(self)
-			self.frameCounter = self.frameCounter + 1
-			if self.frameCounter % animation.frameRate == 0 then
+		nextFrame = function()
+			frameCounter = frameCounter + 1
+			if frameCounter % animation.frameRate == 0 then
 				currentFrame = currentFrame + 1
 			end
 			if currentFrame > #animation.frames then
@@ -89,9 +88,9 @@ function createBroDeathAnimation(animation)
 		draw = function()
 			spr(animation.frames[currentFrame], bro.x, bro.y)
 		end,
-		reset = function(self)
+		reset = function()
 			currentFrame = 1
-			self.frameCounter = 0
+			frameCounter = 0
 			isFinished = false
 		end,
 	}
@@ -214,11 +213,12 @@ sceneGame = {
 
 		if timeUntilNextEnemySpwan <= 0 then
 			timeUntilNextEnemySpwan = rnd(EnemySpawnSpeed)
-			if FrameCounter > 333 == 0 then
-				EnemySpawnSpeed = 10
-			end
-			if FrameCounter > 666 == 0 then
+			if FrameCounter > 999 then
 				EnemySpawnSpeed = 0
+			elseif FrameCounter > 666 then
+				EnemySpawnSpeed = 5
+			elseif FrameCounter > 333 then
+				EnemySpawnSpeed = 10
 			end
 			add(enemies, CreateEnemy(128, 64, 1))
 		end
@@ -234,5 +234,7 @@ sceneGame = {
 			enemy:draw()
 		end
 		print("score: " .. Score, 5, 5, 7)
+		print("EnemySpawnSpeed " .. EnemySpawnSpeed, 5, 15, 7)
+		print("FrameCounter " .. FrameCounter, 5, 35, 7)
 	end,
 }
