@@ -234,7 +234,5 @@ sceneGame = {
 			enemy:draw()
 		end
 		print("score: " .. Score, 5, 5, 7)
-		print("EnemySpawnSpeed " .. EnemySpawnSpeed, 5, 15, 7)
-		print("FrameCounter " .. FrameCounter, 5, 35, 7)
 	end,
 }
