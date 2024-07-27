@@ -1,10 +1,11 @@
 Score = 0
 bullets = {}
 
-frameCounter = 0
+FrameCounter = 0
 lastShootFrame = 0
 
-timeUntilNextEnemySpwan = 100
+timeUntilNextEnemySpwan = 80
+EnemySpawnSpeed = 30
 
 function GetDx(speed)
 	if bro.direction == 1 then
@@ -73,9 +74,9 @@ function createBroDeathAnimation(animation)
 	local currentFrame = 1
 	local isFinished = false
 	return {
-		nextFrame = function()
-			frameCounter = frameCounter + 1
-			if frameCounter % animation.frameRate == 0 then
+		nextFrame = function(self)
+			self.frameCounter = self.frameCounter + 1
+			if self.frameCounter % animation.frameRate == 0 then
 				currentFrame = currentFrame + 1
 			end
 			if currentFrame > #animation.frames then
@@ -88,9 +89,9 @@ function createBroDeathAnimation(animation)
 		draw = function()
 			spr(animation.frames[currentFrame], bro.x, bro.y)
 		end,
-		reset = function()
+		reset = function(self)
 			currentFrame = 1
-			frameCounter = 0
+			self.frameCounter = 0
 			isFinished = false
 		end,
 	}
@@ -106,9 +107,9 @@ bro = {
 	direction = 1,
 	update = function(self)
 		if not self.alive then
-			animation.nextFrame()
+			animation:nextFrame()
 			if animation.isFinished() then
-				animation.reset()
+				animation:reset()
 				_update = sceneGameOver.update
 				_draw = sceneGameOver.draw
 			end
@@ -131,10 +132,10 @@ bro = {
 			self.y = self.y + GetDy(self.speed)
 		end
 		if btn(4) then
-			if frameCounter - lastShootFrame < 10 then
+			if FrameCounter - lastShootFrame < 10 then
 				return
 			end
-			lastShootFrame = frameCounter
+			lastShootFrame = FrameCounter
 			Shoot()
 		end
 	end,
@@ -189,7 +190,7 @@ end
 sceneGame = {
 	update = function()
 		timeUntilNextEnemySpwan -= 1
-		frameCounter += 1
+		FrameCounter += 1
 		bro:update()
 
 		for bullet in all(bullets) do
@@ -212,7 +213,13 @@ sceneGame = {
 		end
 
 		if timeUntilNextEnemySpwan <= 0 then
-			timeUntilNextEnemySpwan = 20 + rnd(60)
+			timeUntilNextEnemySpwan = rnd(EnemySpawnSpeed)
+			if FrameCounter > 333 == 0 then
+				EnemySpawnSpeed = 10
+			end
+			if FrameCounter > 666 == 0 then
+				EnemySpawnSpeed = 0
+			end
 			add(enemies, CreateEnemy(128, 64, 1))
 		end
 	end,
