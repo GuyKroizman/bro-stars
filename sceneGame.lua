@@ -208,13 +208,11 @@ bro = {
 	end,
 }
 
-function CollisionBulletEnemy()
+function CollisionBulletEnemy(bullet)
 	for enemy in all(enemies) do
-		for bullet in all(bullets) do
-			if bullet.x > enemy.x and bullet.x < enemy.x + 8 and bullet.y > enemy.y and bullet.y < enemy.y + 8 then
-				del(enemies, enemy)
-				return true
-			end
+		if bullet.x > enemy.x and bullet.x < enemy.x + 8 and bullet.y > enemy.y and bullet.y < enemy.y + 8 then
+			del(enemies, enemy)
+			return true
 		end
 	end
 	return false
@@ -239,7 +237,7 @@ sceneGame = {
 
 		for bullet in all(bullets) do
 			bullet:update()
-			if CollisionBulletEnemy(bullet, enemies) then
+			if CollisionBulletEnemy(bullet) then
 				sfx(1)
 				del(bullets, bullet)
 				Score += 1
