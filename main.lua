@@ -6,8 +6,8 @@ end
 SceneMenu = {
 	update = function()
 		if btnp(4) or btnp(3) or btnp(2) or btnp(1) or btnp(0) then
-			_update = sceneGame.update
-			_draw = sceneGame.draw
+			_update = SceneGame.update
+			_draw = SceneGame.draw
 		end
 	end,
 	draw = function()
@@ -81,9 +81,9 @@ function CreateEnemy(init_x, init_y, speed)
 	}
 end
 
-enemies = {}
+Enemies = {}
 Score = 0
-bullets = {}
+Bullets = {}
 
 FrameCounter = 0
 LastShootFrame = 0
@@ -173,7 +173,7 @@ function Shoot()
 		dy = GetDy(2),
 		update = function(self)
 			if self.x > 128 or self.x < 0 or self.y < 0 or self.y > 128 then
-				del(bullets, self)
+				del(Bullets, self)
 			end
 			self.x = self.x + self.dx
 			self.y = self.y + self.dy
@@ -182,7 +182,7 @@ function Shoot()
 			spr(11, self.x, self.y)
 		end,
 	}
-	add(bullets, bullet)
+	add(Bullets, bullet)
 end
 
 function CreateBroDeathAnimation(params)
@@ -226,8 +226,8 @@ bro = {
 			deathAnimation:nextFrame()
 			if deathAnimation.isFinished() then
 				deathAnimation:reset()
-				_update = sceneGameOver.update
-				_draw = sceneGameOver.draw
+				_update = SceneGameOver.update
+				_draw = SceneGameOver.draw
 			end
 			return
 		end
@@ -293,9 +293,9 @@ bro = {
 }
 
 function CollisionBulletEnemy(bullet)
-	for enemy in all(enemies) do
+	for enemy in all(Enemies) do
 		if bullet.x > enemy.x and bullet.x < enemy.x + 8 and bullet.y > enemy.y and bullet.y < enemy.y + 8 then
-			del(enemies, enemy)
+			del(Enemies, enemy)
 			return true
 		end
 	end
@@ -313,22 +313,22 @@ function CollisionBroEnemy(bro, enemy)
 	return false
 end
 
-sceneGame = {
+SceneGame = {
 	update = function()
 		TimeUntilNextEnemySpwan -= 1
 		FrameCounter += 1
 		bro:update()
 
-		for bullet in all(bullets) do
+		for bullet in all(Bullets) do
 			bullet:update()
 			if CollisionBulletEnemy(bullet) then
 				sfx(1)
-				del(bullets, bullet)
+				del(Bullets, bullet)
 				Score += 1
 			end
 		end
 
-		for enemy in all(enemies) do
+		for enemy in all(Enemies) do
 			enemy:update()
 
 			if CollisionBroEnemy(bro, enemy) then
@@ -347,7 +347,7 @@ sceneGame = {
 			elseif FrameCounter > 333 then
 				EnemySpawnSpeed = 10
 			end
-			add(enemies, CreateEnemy(128, 64, 1))
+			add(Enemies, CreateEnemy(128, 64, 1))
 		end
 	end,
 	draw = function()
@@ -357,23 +357,23 @@ sceneGame = {
 		Suns:draw()
 
 		bro:draw()
-		for bullet in all(bullets) do
+		for bullet in all(Bullets) do
 			bullet:draw()
 		end
-		for enemy in all(enemies) do
+		for enemy in all(Enemies) do
 			enemy:draw()
 		end
 		print("score: " .. Score, 5, 5, 7)
 	end,
 }
 
-sceneGameOver = {
+SceneGameOver = {
 	update = function()
 		if btnp(4) then
-			_update = sceneGame.update
-			_draw = sceneGame.draw
+			_update = SceneGame.update
+			_draw = SceneGame.draw
 			bro.alive = true
-			enemies = {}
+			Enemies = {}
 			TimeUntilNextEnemySpwan = 80
 			EnemySpawnSpeed = 30
 			FrameCounter = 0
