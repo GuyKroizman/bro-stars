@@ -2,7 +2,7 @@ function CreateEnemyAnimation(params)
 	local currentFrame = 1
 	local framesUntilNextFrame = params.frameRate
 	return {
-		nextFrame = function(self)
+		nextFrame = function()
 			framesUntilNextFrame -= 1
 			if framesUntilNextFrame <= 0 then
 				framesUntilNextFrame = params.frameRate
@@ -60,4 +60,3 @@ function CreateEnemy(init_x, init_y, speed)
 end
 
 enemies = {}
-

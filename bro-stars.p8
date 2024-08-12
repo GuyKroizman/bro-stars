@@ -1,7 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
-#include scenegameover.lua
+#include scenegameover.p8
 #include enemy.lua
 #include scenegame.lua
 #include main.lua
