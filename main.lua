@@ -53,13 +53,13 @@ function CreateEnemy(init_x, init_y, speed)
 			if self.x < 0 then
 				self.dx = 3
 			end
-			if self.x > 118 then
+			if self.x > WORLD_SIZE - 10 then
 				self.dx = -3
 			end
 			if self.y < 0 then
 				self.dy = 3
 			end
-			if self.y > 118 then
+			if self.y > WORLD_SIZE - 10 then
 				self.dy = -3
 			end
 			self.framesuntilnextdirectionchange -= 1
@@ -110,12 +110,13 @@ Stars = CreateStars()
 
 function CreateSuns()
 	local suns = {}
-	for i = 0, 3 do
-		add(suns, { x = rnd(128), y = rnd(128) })
+	for i = 0, 40 do
+		add(suns, { x = rnd(WORLD_SIZE), y = rnd(WORLD_SIZE) })
 	end
 	return {
 		draw = function()
 			for sun in all(suns) do
+				circfill(sun.x, sun.y, 3, 13)
 				circfill(sun.x, sun.y, 2, 10)
 				circfill(sun.x, sun.y, 1, 9)
 			end
