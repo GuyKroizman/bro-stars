@@ -384,6 +384,8 @@ SceneGameOver = {
 			_update = SceneGame.update
 			_draw = SceneGame.draw
 			bro.alive = true
+			bro.x = WORLD_SIZE / 2
+			bro.y = WORLD_SIZE / 2
 			Enemies = {}
 			TimeUntilNextEnemySpwan = 80
 			EnemySpawnSpeed = 30
@@ -394,6 +396,7 @@ SceneGameOver = {
 	end,
 	draw = function()
 		cls()
+		camera(0, 0)
 		print("score " .. Score, 40, 54)
 		print("so dead bro", 40, 64)
 	end,
