@@ -1,9 +1,9 @@
 function _init()
-	_update = sceneMenu.update
-	_draw = sceneMenu.draw
+	_update = SceneMenu.update
+	_draw = SceneMenu.draw
 end
 
-sceneMenu = {
+SceneMenu = {
 	update = function()
 		if btnp(4) or btnp(3) or btnp(2) or btnp(1) or btnp(0) then
 			_update = sceneGame.update
