@@ -213,7 +213,7 @@ function CreateBroDeathAnimation(params)
 	}
 end
 
-deathAnimation = CreateBroDeathAnimation({ frameRate = 4, frames = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } })
+DeathAnimation = CreateBroDeathAnimation({ frameRate = 4, frames = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } })
 
 bro = {
 	x = 64,
@@ -223,9 +223,9 @@ bro = {
 	direction = 1,
 	update = function(self)
 		if not self.alive then
-			deathAnimation:nextFrame()
-			if deathAnimation.isFinished() then
-				deathAnimation:reset()
+			DeathAnimation:nextFrame()
+			if DeathAnimation.isFinished() then
+				DeathAnimation:reset()
 				_update = SceneGameOver.update
 				_draw = SceneGameOver.draw
 			end
@@ -271,7 +271,7 @@ bro = {
 	end,
 	draw = function(self)
 		if not self.alive then
-			deathAnimation.draw()
+			DeathAnimation.draw()
 			return
 		end
 		if self.direction == 1 then
