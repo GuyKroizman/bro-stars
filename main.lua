@@ -93,8 +93,8 @@ EnemySpawnSpeed = 30
 
 function CreateStars()
 	local stars = {}
-	for i = 0, 20 do
-		add(stars, { x = rnd(128), y = rnd(128) })
+	for i = 0, 1000 do
+		add(stars, { x = rnd(1280), y = rnd(1280) })
 	end
 	return {
 		draw = function()
@@ -247,10 +247,10 @@ bro = {
 			if (self.direction == 8 or self.direction == 1 or self.direction == 2) and self.y < 0 then
 				return
 			end
-			if (self.direction == 2 or self.direction == 3 or self.direction == 4) and self.x > 120 then
+			if (self.direction == 2 or self.direction == 3 or self.direction == 4) and self.x > 1200 then
 				return
 			end
-			if (self.direction == 4 or self.direction == 5 or self.direction == 6) and self.y > 120 then
+			if (self.direction == 4 or self.direction == 5 or self.direction == 6) and self.y > 1200 then
 				return
 			end
 			if (self.direction == 6 or self.direction == 7 or self.direction == 8) and self.x < 0 then
@@ -266,6 +266,8 @@ bro = {
 			LastShootFrame = FrameCounter
 			Shoot()
 		end
+
+		camera(self.x - 64, self.y - 64)
 	end,
 	draw = function(self)
 		if not self.alive then
@@ -363,7 +365,7 @@ SceneGame = {
 		for enemy in all(Enemies) do
 			enemy:draw()
 		end
-		print("score: " .. Score, 5, 5, 7)
+		print("score: " .. Score, bro.x - 60, bro.y - 60, 15)
 	end,
 }
 
