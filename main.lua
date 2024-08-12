@@ -93,14 +93,21 @@ TimeUntilNextEnemySpwan = 80
 EnemySpawnSpeed = 30
 
 function CreateStars()
-	local stars = {}
-	for i = 0, 1000 do
-		add(stars, { x = rnd(WORLD_SIZE), y = rnd(WORLD_SIZE) })
+	local brightStars = {}
+	local dimStars = {}
+	for i = 0, 444 do
+		add(brightStars, { x = rnd(WORLD_SIZE), y = rnd(WORLD_SIZE) })
+	end
+	for i = 0, 1111 do
+		add(dimStars, { x = rnd(WORLD_SIZE), y = rnd(WORLD_SIZE) })
 	end
 	return {
 		draw = function()
-			for star in all(stars) do
+			for star in all(brightStars) do
 				pset(star.x, star.y, 7)
+			end
+			for star in all(dimStars) do
+				pset(star.x, star.y, 13)
 			end
 		end,
 	}
