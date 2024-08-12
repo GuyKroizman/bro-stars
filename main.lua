@@ -81,6 +81,7 @@ function CreateEnemy(init_x, init_y, speed)
 	}
 end
 
+WORLD_SIZE = 1280
 Enemies = {}
 Score = 0
 Bullets = {}
@@ -94,7 +95,7 @@ EnemySpawnSpeed = 30
 function CreateStars()
 	local stars = {}
 	for i = 0, 1000 do
-		add(stars, { x = rnd(1280), y = rnd(1280) })
+		add(stars, { x = rnd(WORLD_SIZE), y = rnd(WORLD_SIZE) })
 	end
 	return {
 		draw = function()
@@ -172,7 +173,7 @@ function Shoot()
 		dx = GetDx(2),
 		dy = GetDy(2),
 		update = function(self)
-			if self.x > 128 or self.x < 0 or self.y < 0 or self.y > 128 then
+			if self.x > bro.x + 64 or self.x < bro.x - 64 or self.y < bro.y - 64 or self.y > bro.y + 64 then
 				del(Bullets, self)
 			end
 			self.x = self.x + self.dx
@@ -216,8 +217,8 @@ end
 DeathAnimation = CreateBroDeathAnimation({ frameRate = 4, frames = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } })
 
 bro = {
-	x = 64,
-	y = 64,
+	x = WORLD_SIZE / 2,
+	y = WORLD_SIZE / 2,
 	speed = 1,
 	alive = true,
 	direction = 1,
