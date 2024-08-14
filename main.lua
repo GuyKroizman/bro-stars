@@ -302,7 +302,12 @@ bro = {
 
 function CollisionBulletEnemy(bullet)
 	for enemy in all(Enemies) do
-		if bullet.x > enemy.x and bullet.x < enemy.x + 8 and bullet.y > enemy.y and bullet.y < enemy.y + 8 then
+		if
+			bullet.x + 2 >= enemy.x
+			and bullet.x + 2 <= enemy.x + 8
+			and bullet.y + 3 >= enemy.y
+			and bullet.y - 3 <= enemy.y + 8
+		then
 			del(Enemies, enemy)
 			return true
 		end
@@ -362,7 +367,7 @@ function CreateEnemySpawner()
 					enemySpawnSpeed = 10
 				end
 
-				if Enemies and #Enemies > 2000 then
+				if Enemies and #Enemies > 1000 then
 					return
 				end
 
