@@ -321,21 +321,21 @@ function CollisionBroEnemy(bro, enemy)
 	return false
 end
 
-function GetRandomPosOutsidePlayerView()
-	local x = rnd(WORLD_SIZE)
-	local y = rnd(WORLD_SIZE)
-	if bro.x < 64 then
-		x = rnd(WORLD_SIZE - 64) + 64
+function GetRandomPosJustOutsidePlayerView()
+	local margin = 32
+
+	local top = bro.y - 64
+	local y = top - margin + rnd(margin)
+	local x = 0
+
+	if bro.x > WORLD_SIZE / 2 then
+		local left = bro.x - 64
+		x = left - margin + rnd(margin)
+	else
+		local right = bro.x + 64
+		x = right + margin + rnd(margin)
 	end
-	if bro.x > WORLD_SIZE - 64 then
-		x = rnd(WORLD_SIZE - 64)
-	end
-	if bro.y < 64 then
-		y = rnd(WORLD_SIZE - 64) + 64
-	end
-	if bro.y > WORLD_SIZE - 64 then
-		y = rnd(WORLD_SIZE - 64)
-	end
+
 	return { x = x, y = y }
 end
 
@@ -366,7 +366,7 @@ function CreateEnemySpawner()
 					return
 				end
 
-				local pos = GetRandomPosOutsidePlayerView()
+				local pos = GetRandomPosJustOutsidePlayerView()
 				add(Enemies, CreateEnemy(pos.x, pos.y, 1))
 			end
 		end,
@@ -410,9 +410,6 @@ SceneGame = {
 		bro:draw()
 		for bullet in all(Bullets) do
 			bullet:draw()
-		end
-		if EnemySpawner.timeUntilNextEnemySpawn then
-			print("enemy spawn " .. EnemySpawner.timeUntilNextEnemySpawn, bro.x - 60, bro.y - 40, 15)
 		end
 		for enemy in all(Enemies) do
 			enemy:draw()
