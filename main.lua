@@ -89,9 +89,6 @@ Bullets = {}
 FrameCounter = 0
 LastShootFrame = 0
 
-TimeUntilNextEnemySpwan = 80
-EnemySpawnSpeed = 30
-
 function CreateStars()
 	local brightStars = {}
 	local dimStars = {}
@@ -324,9 +321,62 @@ function CollisionBroEnemy(bro, enemy)
 	return false
 end
 
+function GetRandomPosOutsidePlayerView()
+	local x = rnd(WORLD_SIZE)
+	local y = rnd(WORLD_SIZE)
+	if bro.x < 64 then
+		x = rnd(WORLD_SIZE - 64) + 64
+	end
+	if bro.x > WORLD_SIZE - 64 then
+		x = rnd(WORLD_SIZE - 64)
+	end
+	if bro.y < 64 then
+		y = rnd(WORLD_SIZE - 64) + 64
+	end
+	if bro.y > WORLD_SIZE - 64 then
+		y = rnd(WORLD_SIZE - 64)
+	end
+	return { x = x, y = y }
+end
+
+function CreateEnemySpawner()
+	local enemySpawnSpeed = 30
+	local frameCounter = 0
+	return {
+		timeUntilNextEnemySpawn = 80,
+		reset = function(self)
+			self.timeUntilNextEnemySpawn = 80
+			enemySpawnSpeed = 30
+			frameCounter = 0
+		end,
+		update = function(self)
+			self.timeUntilNextEnemySpawn -= 1
+			frameCounter += 1
+			if self.timeUntilNextEnemySpawn <= 0 then
+				self.timeUntilNextEnemySpawn = rnd(enemySpawnSpeed)
+				if frameCounter > 999 then
+					enemySpawnSpeed = 0
+				elseif frameCounter > 666 then
+					enemySpawnSpeed = 5
+				elseif frameCounter > 333 then
+					enemySpawnSpeed = 10
+				end
+
+				if Enemies and #Enemies > 2000 then
+					return
+				end
+
+				local pos = GetRandomPosOutsidePlayerView()
+				add(Enemies, CreateEnemy(pos.x, pos.y, 1))
+			end
+		end,
+	}
+end
+
+EnemySpawner = CreateEnemySpawner()
+
 SceneGame = {
 	update = function()
-		TimeUntilNextEnemySpwan -= 1
 		FrameCounter += 1
 		bro:update()
 
@@ -349,17 +399,7 @@ SceneGame = {
 			end
 		end
 
-		if TimeUntilNextEnemySpwan <= 0 then
-			TimeUntilNextEnemySpwan = rnd(EnemySpawnSpeed)
-			if FrameCounter > 999 then
-				EnemySpawnSpeed = 0
-			elseif FrameCounter > 666 then
-				EnemySpawnSpeed = 5
-			elseif FrameCounter > 333 then
-				EnemySpawnSpeed = 10
-			end
-			add(Enemies, CreateEnemy(128, 64, 1))
-		end
+		EnemySpawner:update()
 	end,
 	draw = function()
 		cls(1)
@@ -370,6 +410,9 @@ SceneGame = {
 		bro:draw()
 		for bullet in all(Bullets) do
 			bullet:draw()
+		end
+		if EnemySpawner.timeUntilNextEnemySpawn then
+			print("enemy spawn " .. EnemySpawner.timeUntilNextEnemySpawn, bro.x - 60, bro.y - 40, 15)
 		end
 		for enemy in all(Enemies) do
 			enemy:draw()
@@ -387,8 +430,7 @@ SceneGameOver = {
 			bro.x = WORLD_SIZE / 2
 			bro.y = WORLD_SIZE / 2
 			Enemies = {}
-			TimeUntilNextEnemySpwan = 80
-			EnemySpawnSpeed = 30
+			EnemySpawner:reset()
 			FrameCounter = 0
 			LastShootFrame = 0
 			Score = 0
